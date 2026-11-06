@@ -58,6 +58,7 @@ void ProfileWatcher::onDirectoryChanged(const QString &path)
     return;
 
   const QString directory = QFileInfo(m_store.path()).absolutePath();
+  QDir().mkpath(directory);
   if (!m_watcher.directories().contains(directory))
     m_watcher.addPath(directory);
 
