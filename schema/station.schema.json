@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/yock/omarchy-ham/master/schema/station.schema.json",
+  "title": "Omarchy Ham Station Profile",
+  "description": "The shared station wiring and operator identity for Omarchy ham radio apps.",
+  "type": "object",
+  "required": ["version"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "Optional schema reference for editors. Consumers ignore it."
+    },
+    "version": {
+      "const": 1,
+      "description": "Profile format version. Version 1 is frozen; changes require a new version."
+    },
+    "operator": {
+      "$ref": "#/$defs/operator"
+    },
+    "station": {
+      "$ref": "#/$defs/station"
+    },
+    "audio": {
+      "$ref": "#/$defs/audio"
+    },
+    "tnc": {
+      "$ref": "#/$defs/tnc"
+    },
+    "cat": {
+      "$ref": "#/$defs/cat"
+    }
+  },
+  "$defs": {
+    "operator": {
+      "type": "object",
+      "description": "Operator identity. Apps may write these fields on explicit user action.",
+      "additionalProperties": false,
+      "properties": {
+        "callsign": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 16,
+          "pattern": "^[A-Za-z0-9/]+$",
+          "description": "Amateur callsign, normalised to uppercase with any portable suffix retained."
+        },
+        "grid": {
+          "type": "string",
+          "pattern": "^[A-Ra-r]{2}[0-9]{2}([A-Xa-x]{2}([0-9]{2})?)?$",
+          "description": "Maidenhead grid locator: 4, 6 or 8 characters. Canonical display is 6 characters."
+        },
+        "gridSource": {
+          "enum": ["manual", "gps"],
+          "default": "manual",
+          "description": "Whether the grid is hand-entered or may be updated from a GPS fix."
+        }
+      }
+    },
+    "station": {
+      "type": "object",
+      "description": "The station paths the operator declares. A declaration, never an inference.",
+      "additionalProperties": false,
+      "required": ["paths"],
+      "properties": {
+        "paths": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["host-audio", "tnc"]
+          },
+          "description": "Every path this station expects. Both values mean both paths, not a third kind."
+        }
+      }
+    },
+    "audio": {
+      "type": "object",
+      "description": "Radio audio roles. Each role is independent; an absent role is unassigned.",
+      "additionalProperties": false,
+      "properties": {
+        "rx": {
+          "$ref": "#/$defs/audioRole"
+        },
+        "tx": {
+          "$ref": "#/$defs/audioRole"
+        }
+      }
+    },
+    "audioRole": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node"],
+      "properties": {
+        "node": {
+          "type": "string",
+          "minLength": 1,
+          "description": "PipeWire node.name of a non-stream source (rx) or sink (tx)."
+        }
+      }
+    },
+    "tnc": {
+      "type": "object",
+      "description": "The modem transport for a TNC station path.",
+      "additionalProperties": false,
+      "required": ["transport"],
+      "properties": {
+        "transport": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/serialTransport"
+            },
+            {
+              "$ref": "#/$defs/bluetoothTransport"
+            }
+          ]
+        },
+        "baud": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Serial baud rate. Meaningful only for a serial transport."
+        }
+      }
+    },
+    "serialTransport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "path"],
+      "properties": {
+        "kind": {
+          "const": "serial"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^/dev/",
+          "description": "A stable device path, preferably /dev/serial/by-id/... rather than /dev/ttyACM0."
+        }
+      }
+    },
+    "bluetoothTransport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "address"],
+      "properties": {
+        "kind": {
+          "const": "bluetooth"
+        },
+        "address": {
+          "type": "string",
+          "pattern": "^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$",
+          "description": "Bluetooth device address."
+        }
+      }
+    },
+    "cat": {
+      "type": "object",
+      "description": "The CAT endpoint. The rigctld process owns the rig model, serial speed and PTT wiring.",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "const": "rigctld",
+          "description": "The only CAT endpoint kind in version 1."
+        },
+        "host": {
+          "type": "string",
+          "minLength": 1,
+          "default": "localhost",
+          "description": "Host where rigctld listens. Consumers apply this default when the field is absent."
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 4532,
+          "description": "TCP port where rigctld listens. Consumers apply this default when the field is absent."
+        }
+      }
+    }
+  }
+}

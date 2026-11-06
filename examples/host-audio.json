@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/yock/omarchy-ham/master/schema/station.schema.json",
+  "version": 1,
+  "operator": {
+    "callsign": "N0CALL",
+    "grid": "FN31pr",
+    "gridSource": "manual"
+  },
+  "station": {
+    "paths": ["host-audio"]
+  },
+  "audio": {
+    "rx": {
+      "node": "alsa_input.usb-C-Media_Electronics_Inc._USB_Audio_Device-00.mono-fallback"
+    },
+    "tx": {
+      "node": "alsa_output.usb-C-Media_Electronics_Inc._USB_Audio_Device-00.analog-stereo"
+    }
+  },
+  "cat": {
+    "kind": "rigctld",
+    "host": "localhost",
+    "port": 4532
+  }
+}

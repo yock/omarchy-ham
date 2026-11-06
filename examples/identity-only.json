@@ -1,0 +1,7 @@
+{
+  "$schema": "https://raw.githubusercontent.com/yock/omarchy-ham/master/schema/station.schema.json",
+  "version": 1,
+  "operator": {
+    "callsign": "N0CALL"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://raw.githubusercontent.com/yock/omarchy-ham/master/schema/station.schema.json",
+  "version": 1,
+  "operator": {
+    "callsign": "N0CALL",
+    "grid": "FN31pr",
+    "gridSource": "gps"
+  },
+  "station": {
+    "paths": ["tnc"]
+  },
+  "tnc": {
+    "transport": {
+      "kind": "serial",
+      "path": "/dev/serial/by-id/usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0"
+    },
+    "baud": 38400
+  }
+}
