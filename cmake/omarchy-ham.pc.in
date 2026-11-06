@@ -1,0 +1,11 @@
+prefix=${pcfiledir}/../..
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: omarchy-ham
+Description: Shared station profile for Omarchy ham radio apps
+Version: @PROJECT_VERSION@
+Requires: Qt6Core
+Libs: -L${libdir} -lomarchy_ham
+Cflags: -I${includedir}

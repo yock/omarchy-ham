@@ -1,6 +1,6 @@
 # Omarchy Ham Station Profile
 
-**Status:** Draft v1 · 2026-11-06
+**Status:** Version 1 · 2026-11-06 · CLI/library 0.1.0
 **Schema:** [`schema/station.schema.json`](schema/station.schema.json)
 **Related:** [Station Readiness](https://github.com/yock/omarchy-station) · [Omarchy JS8](https://github.com/yock/omarchy-js8)
 
@@ -425,6 +425,52 @@ Open the transport, detect holdership, and report in use rather than stealing.
 Readiness checks may observe the transport but must not open a KISS dialogue on
 it.
 
+### 8.6 CLI
+
+`omarchy-ham` is the reference writer and the integration point for QML apps. It
+accepts `--profile <path>` before the command to override the default profile
+path.
+
+```
+station path
+station get [field]
+station set <field> <value>
+station unset <field>
+station validate
+station migrate
+station watch
+audio node-exists <rx|tx> <node>
+audio list <rx|tx>
+grid --from-gps [--force] [--dry-run]
+```
+
+Fields accepted by `get`, `set` and `unset`:
+
+```
+operator.callsign      operator.grid       operator.gridSource
+station.paths          audio.rx.node       audio.tx.node
+tnc.transport          tnc.baud            cat.kind
+cat.host               cat.port
+```
+
+`station.paths` is comma-separated (`host-audio,tnc`). `tnc.transport` is
+`serial:<path>` or `bluetooth:<address>`. `station set` and `station unset`
+validate before writing; an invalid edit leaves the profile unchanged.
+
+`station get` with no field prints the stored profile. With a field it prints the
+stored value; `cat.host`, `cat.port` and `operator.gridSource` print their
+effective defaults. A missing field prints nothing and exits successfully.
+`station validate` treats a missing profile as the valid unconfigured state and
+exits successfully. `station watch` prints the profile after each valid change
+and `{"event":"missing"}` when the profile disappears.
+
+`audio node-exists` exits 0 when the node is present and 1 when it is missing;
+it pre-validates against `pw-dump` because PipeWire silently falls back on a
+missing target. `grid --from-gps` requires `operator.gridSource: gps` unless
+`--force` is passed; `--dry-run` prints the grid without writing it.
+
+Exit codes: 0 success, 1 runtime or validation error, 2 usage error.
+
 ## 9. Versioning and migration
 
 - `version` is an integer. The current value is `1`.
@@ -460,10 +506,6 @@ it.
 
 These are tracked as GitHub issues:
 
-- [#1](https://github.com/yock/omarchy-ham/issues/1) — CLI/library toolchain and
-  packaging
-- [#2](https://github.com/yock/omarchy-ham/issues/2) — v1 CLI and library
-  implementation
 - [#3](https://github.com/yock/omarchy-ham/issues/3) — migrating the widget's
   existing `shell.json` wiring keys to the profile
 - [#4](https://github.com/yock/omarchy-ham/issues/4) — TNC serial transport
@@ -496,3 +538,7 @@ These are tracked as GitHub issues:
   versioning
 - [`docs/adr/0012`](docs/adr/0012-gps-mode-stays-widget-local.md) — `gpsMode`
   stays widget-local
+- [`docs/adr/0013`](docs/adr/0013-the-cli-and-library-are-cpp20-qt6-cmake.md) —
+  C++20, Qt 6 Core and CMake
+- [`docs/adr/0014`](docs/adr/0014-v1-validation-is-hand-written.md) — hand-written
+  v1 validation

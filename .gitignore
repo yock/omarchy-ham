@@ -1,2 +1,6 @@
 __pycache__/
 .venv/
+build/
+CMakeCache.txt
+CMakeFiles/
+compile_commands.json
