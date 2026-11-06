@@ -460,10 +460,15 @@ it.
 
 These are tracked as GitHub issues:
 
-- migrating the widget's existing `shell.json` wiring keys to the profile
-- TNC serial transport arbitration
-- JS8's named-node targeting implementation
-- the CLI/library toolchain and packaging
+- [#1](https://github.com/yock/omarchy-ham/issues/1) — CLI/library toolchain and
+  packaging
+- [#2](https://github.com/yock/omarchy-ham/issues/2) — v1 CLI and library
+  implementation
+- [#3](https://github.com/yock/omarchy-ham/issues/3) — migrating the widget's
+  existing `shell.json` wiring keys to the profile
+- [#4](https://github.com/yock/omarchy-ham/issues/4) — TNC serial transport
+  arbitration
+- [#5](https://github.com/yock/omarchy-ham/issues/5) — JS8 named-node targeting
 
 ## 13. Related decisions
 
